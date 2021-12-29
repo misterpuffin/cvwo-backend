@@ -17,7 +17,7 @@ const (
 	JWT_KEY              = "JWT_KEY"
 	RUN_MIGRATION        = "RUN_MIGRATION"
 	MYSQL_SERVER_HOST = "POSTGRES_SERVER_HOST"
-	ENVIRONEMT           = "ENV"
+	ENVIRONMEMT           = "ENV"
 )
 
 type ConfigType map[string]string
