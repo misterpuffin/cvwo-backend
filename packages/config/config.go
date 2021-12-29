@@ -37,12 +37,10 @@ var Config = ConfigType{
 func InitConfig() {
 	environment, exists := os.LookupEnv(ENVIRONEMT)
 	var envFilePath string
-	if exists && environment == "test" {
-		envFilePath, _ = filepath.Abs("../.env.test")
-	} else {
+	if exists {
 		envFilePath, _ = filepath.Abs("../.env")
 	}
-	if err := godotenv.Load(envFilePath); err != nil {
+	if err := godotenv.Load(envFilePath);  environment != "prod" && err != nil {
 		log.WithField("reason", err.Error()).Fatal("No .env file found")
 	}
 
