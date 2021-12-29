@@ -16,7 +16,7 @@ func Connect() (*gorm.DB, error) {
 	url := config.Config[config.MYSQL_URL]
 	// host := config.Config[config.MYSQL_SERVER_HOST]
 
-	dsn := fmt.Sprintf("%s:%s@%s/%s?charset=utf8mb4&parseTime=True&loc=Local", user, password, url, database)
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:3306)/%s?charset=utf8mb4&parseTime=True&loc=Local", user, password, url, database)
   	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 
 	if err != nil{
