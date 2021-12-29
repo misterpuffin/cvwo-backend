@@ -35,7 +35,7 @@ var Config = ConfigType{
 }
 
 func InitConfig() {
-	environment, exists := os.LookupEnv(ENVIRONEMT)
+	environment, exists := os.LookupEnv(ENVIRONMEMT)
 	var envFilePath string
 	if exists {
 		envFilePath, _ = filepath.Abs("../.env")
