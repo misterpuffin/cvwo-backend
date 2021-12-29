@@ -3,6 +3,7 @@ package utils
 import (
 	"net/http"
 	"encoding/json"
+	"server/packages/config"
 )
 
 type ErrorResponse struct {
@@ -29,10 +30,18 @@ func NewErrorResponse(w http.ResponseWriter, statusCode int, response string){
 		true,
 		response,
 	}
-	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Origin", config.Config[config.CLIENT_URL])
     w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(statusCode)
 	json.NewEncoder(w).Encode(&error)
+	return
+}
+
+func NewJSONResponse(w http.ResponseWriter, data interface{}){
+	w.Header().Set("Access-Control-Allow-Origin", config.Config[config.CLIENT_URL])
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(data)
 	return
 }

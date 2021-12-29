@@ -11,6 +11,7 @@ const (
 	MYSQL_USER        = "MYSQL_USER"
 	MYSQL_PASSWORD    = "MYSQL_PASSWORD"
 	MYSQL_DB          = "MYSQL_DB"
+	MYSQL_URL		  = "MYSQL_URL"
 	CLIENT_URL           = "CLIENT_URL"
 	SERVER_PORT          = "SERVER_PORT"
 	JWT_KEY              = "JWT_KEY"
@@ -25,6 +26,7 @@ var Config = ConfigType{
 	MYSQL_USER:     	  "",
 	MYSQL_PASSWORD:    	  "",
 	MYSQL_DB:        	  "",
+	MYSQL_URL:			  "",
 	CLIENT_URL:           "",
 	SERVER_PORT:          "",
 	JWT_KEY:              "",
@@ -48,6 +50,7 @@ func InitConfig() {
 		MYSQL_USER:     true,
 		MYSQL_PASSWORD: true,
 		MYSQL_DB:       true,
+		MYSQL_URL:		true,
 		CLIENT_URL:        true,
 		SERVER_PORT:       true,
 		RUN_MIGRATION:     true,

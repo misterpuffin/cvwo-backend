@@ -25,5 +25,5 @@ func main() {
 	http.Handle("/", r)
 
 	// Starts server
-	log.Fatal(http.ListenAndServe(":8000", r))
+	log.Fatal(http.ListenAndServe(config.Config[config.SERVER_PORT], r))
 }

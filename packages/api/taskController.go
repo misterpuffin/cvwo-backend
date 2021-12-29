@@ -4,7 +4,6 @@ import (
 	"server/packages/db"
 	"server/packages/utils"
 	"net/http"
-	"encoding/json"
 	"strconv"
 	"github.com/gorilla/mux"
 )
@@ -21,22 +20,12 @@ func (h *Handler) CreateTask(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-    w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(&task)
-
-
-
-
-
+	utils.NewJSONResponse(w, &task)
 }
 
 func (h *Handler) GetTasks(w http.ResponseWriter, r *http.Request) {
 	reqUserID := r.Header.Get("userID")
 	var tasks []db.Task
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-    w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 
 	err := h.DB.Where("user_id = ?", reqUserID).Find(&tasks).Error
 	if err != nil {
@@ -45,8 +34,7 @@ func (h *Handler) GetTasks(w http.ResponseWriter, r *http.Request) {
 	}
 
 
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(&tasks)
+	utils.NewJSONResponse(w, &tasks)
 	
 }
 
@@ -72,10 +60,7 @@ func (h *Handler) UpdateTask(w http.ResponseWriter, r *http.Request) {
 	} else {
 		task.Name = r.FormValue("name")
 		h.DB.Save(&task)
-		w.Header().Set("Access-Control-Allow-Origin", "*")
-		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
-		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(task)
+		utils.NewJSONResponse(w, &task)
 	}
 
 
@@ -102,10 +87,7 @@ func (h *Handler) DeleteTask(w http.ResponseWriter, r *http.Request) {
 		return
 	} else {
 		h.DB.Delete(&task)
-		w.Header().Set("Access-Control-Allow-Origin", "*")
-		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
-		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(task)
+		utils.NewJSONResponse(w, &task)
 	}
 	
 }

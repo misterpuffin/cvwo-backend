@@ -13,9 +13,10 @@ func Connect() (*gorm.DB, error) {
 	user := config.Config[config.MYSQL_USER]
 	password := config.Config[config.MYSQL_PASSWORD]
 	database := config.Config[config.MYSQL_DB]
+	url := config.Config[config.MYSQL_URL]
 	// host := config.Config[config.MYSQL_SERVER_HOST]
 
-	dsn := fmt.Sprintf("%s:%s@tcp(localhost:3306)/%s?charset=utf8mb4&parseTime=True&loc=Local", user, password, database)
+	dsn := fmt.Sprintf("%s:%s@%s/%s?charset=utf8mb4&parseTime=True&loc=Local", user, password, url, database)
   	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 
 	if err != nil{
