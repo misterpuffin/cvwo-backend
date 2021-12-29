@@ -13,7 +13,7 @@ const (
 	MYSQL_DB          = "MYSQL_DB"
 	MYSQL_URL		  = "MYSQL_URL"
 	CLIENT_URL           = "CLIENT_URL"
-	SERVER_PORT          = "SERVER_PORT"
+	PORT          		 = "PORT"
 	JWT_KEY              = "JWT_KEY"
 	RUN_MIGRATION        = "RUN_MIGRATION"
 	MYSQL_SERVER_HOST = "POSTGRES_SERVER_HOST"
@@ -28,7 +28,7 @@ var Config = ConfigType{
 	MYSQL_DB:        	  "",
 	MYSQL_URL:			  "",
 	CLIENT_URL:           "",
-	SERVER_PORT:          "",
+	PORT:          		  "",
 	JWT_KEY:              "",
 	RUN_MIGRATION:        "",
 	MYSQL_SERVER_HOST: "localhost",
@@ -37,11 +37,11 @@ var Config = ConfigType{
 func InitConfig() {
 	environment, exists := os.LookupEnv(ENVIRONMEMT)
 	var envFilePath string
-	if exists {
+	if !(exists && environment == "prod") {
 		envFilePath, _ = filepath.Abs("../.env")
-	}
-	if err := godotenv.Load(envFilePath);  environment != "prod" && err != nil {
-		log.WithField("reason", err.Error()).Fatal("No .env file found")
+		if err := godotenv.Load(envFilePath);  environment != "prod" && err != nil {
+			log.WithField("reason", err.Error()).Fatal("No .env file found")
+		}
 	}
 
 	required := map[string]bool{
@@ -50,7 +50,7 @@ func InitConfig() {
 		MYSQL_DB:       true,
 		MYSQL_URL:		true,
 		CLIENT_URL:        true,
-		SERVER_PORT:       true,
+		PORT:       	   true,
 		RUN_MIGRATION:     true,
 	}
 
