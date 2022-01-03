@@ -15,8 +15,8 @@ func (h *Handler) CreateTask(w http.ResponseWriter, r *http.Request) {
 	reqUserID := r.Header.Get("userID")
 	task.UserID = reqUserID
 	task.Name = r.FormValue("name")
-
 	tagNames := r.Form["tag"]
+	task.Tags = tagNames
 
 	err := h.DB.Create(&task).Error
 	if err != nil {
@@ -29,14 +29,20 @@ func (h *Handler) CreateTask(w http.ResponseWriter, r *http.Request) {
 		tag.Name = tagName
 		tag.UserID = reqUserID
 		tag.TaskID = strconv.FormatUint(uint64(task.ID), 10)
+
+		err := h.DB.Create(&tag).Error
+		if err != nil {
+			utils.NewErrorResponse(w, http.StatusUnauthorized, "Error: " + err.Error())
+			return
+		}
 	}
 
 	utils.NewJSONResponse(w, &task)
 }
 
 type GetResponse struct {
-	Tasks 	[]db.Task
-	Tags	[]string
+	Tasks 	[]db.Task `json:"tasks"`
+	Tags	[]string `json:"tags"`
 }
 
 func (h *Handler) GetTasks(w http.ResponseWriter, r *http.Request) {
@@ -102,8 +108,25 @@ func (h *Handler) UpdateTask(w http.ResponseWriter, r *http.Request) {
 		utils.NewErrorResponse(w, http.StatusUnauthorized, "Unauthorised access")
 		return
 	} else {
+		r.ParseForm()
 		task.Name = r.FormValue("name")
+		task.Tags = r.Form["tag"]
 		h.DB.Save(&task)
+
+		h.DB.Where("task_id = ?", taskID).Delete(db.Tag{})
+		for _, tagName := range task.Tags {
+			var tag db.Tag 
+			tag.Name = tagName
+			tag.UserID = reqUserID
+			tag.TaskID = strconv.FormatUint(uint64(task.ID), 10)
+	
+			err := h.DB.Create(&tag).Error
+			if err != nil {
+				utils.NewErrorResponse(w, http.StatusUnauthorized, "Error: " + err.Error())
+				return
+			}
+		}
+
 		utils.NewJSONResponse(w, &task)
 	}
 
@@ -131,6 +154,7 @@ func (h *Handler) DeleteTask(w http.ResponseWriter, r *http.Request) {
 		return
 	} else {
 		h.DB.Delete(&task)
+		h.DB.Where("task_id = ?", taskID).Delete(db.Tag{})
 		utils.NewJSONResponse(w, &task)
 	}
 	

@@ -12,8 +12,8 @@ type User struct {
 	Password  string `json:"-"`
 	Email     string `json:"email,omitempty" gorm:"unique,not null;default:null"`
 	Name      string `json:"name,omitempty"`
-	CreatedAt time.Time `json:"created_at,omitempty"`
-	UpdatedAt time.Time `json:"updated_at,omitempty"`
+	CreatedAt time.Time `json:"created_at,omitempty" gorm:"-"`
+	UpdatedAt time.Time `json:"updated_at,omitempty" gorm:"-"`
 }
 
 type JWTToken struct {
@@ -48,9 +48,9 @@ type Task struct {
 	ID        uint `json:"id,omitempty" gorm:"primaryKey"`
 	UserID	  string `json:"user_id,omitempty"`
 	Name      string `json:"name,omitempty"`
-	Tags	  []string `json:"tag,omitempty" gorm:"-"`
-	CreatedAt time.Time `json:"created_at,omitempty"`
-	UpdatedAt time.Time `json:"updated_at,omitempty"`
+	Tags	  []string `json:"tags,omitempty" gorm:"-"`
+	CreatedAt time.Time `json:"created_at,omitempty" gorm:"-"`
+	UpdatedAt time.Time `json:"updated_at,omitempty" gorm:"-"`
 }
 
 type Tag struct {
