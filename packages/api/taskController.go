@@ -10,9 +10,13 @@ import (
 
 func (h *Handler) CreateTask(w http.ResponseWriter, r *http.Request) {
 	var task db.Task
-	task.UserID = r.Header.Get("userID")
+
+	r.ParseForm()
+	reqUserID := r.Header.Get("userID")
+	task.UserID = reqUserID
 	task.Name = r.FormValue("name")
-	task.Tag = r.FormValue("tag")
+
+	tagNames := r.Form["tag"]
 
 	err := h.DB.Create(&task).Error
 	if err != nil {
@@ -20,7 +24,19 @@ func (h *Handler) CreateTask(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	for _, tagName := range tagNames {
+		var tag db.Tag 
+		tag.Name = tagName
+		tag.UserID = reqUserID
+		tag.TaskID = strconv.FormatUint(uint64(task.ID), 10)
+	}
+
 	utils.NewJSONResponse(w, &task)
+}
+
+type GetResponse struct {
+	Tasks 	[]db.Task
+	Tags	[]string
 }
 
 func (h *Handler) GetTasks(w http.ResponseWriter, r *http.Request) {
@@ -33,8 +49,36 @@ func (h *Handler) GetTasks(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	for index, task := range tasks {
+		var tags []db.Tag
+		err := h.DB.Select("name").Where("task_id = ?", task.ID).Find(&tags).Error
+		if err != nil {
+			utils.NewErrorResponse(w, http.StatusUnauthorized, "Error: " + err.Error())
+			return
+		}
 
-	utils.NewJSONResponse(w, &tasks)
+		tagNames := make([]string, len(tags))
+		for i, tag := range tags {
+			tagNames[i] = tag.Name
+		}
+
+		tasks[index].Tags = tagNames
+	}
+
+	var tags []db.Tag
+
+	err = h.DB.Distinct("name").Select("name").Where("user_id = ?", reqUserID).Find(&tags).Error
+	if err != nil {
+		utils.NewErrorResponse(w, http.StatusUnauthorized, "Error: " + err.Error())
+		return
+	}
+
+	tagNames := make([]string, len(tags))
+	for i, tag := range tags {
+		tagNames[i] = tag.Name
+	}
+
+	utils.NewJSONResponse(w, GetResponse{tasks, tagNames})
 	
 }
 
