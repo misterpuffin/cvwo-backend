@@ -17,7 +17,7 @@ func main() {
 	if database == nil {
 		panic(err)
 	} else {
-		database.AutoMigrate(&db.User{}, &db.Task{})
+		database.AutoMigrate(&db.User{}, &db.Task{}, &db.Tag{})
 	}
 
 	// Initialise router
