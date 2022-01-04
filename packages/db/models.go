@@ -48,7 +48,7 @@ type Task struct {
 	ID        uint `json:"id,omitempty" gorm:"primaryKey"`
 	UserID	  string `json:"user_id,omitempty"`
 	Name      string `json:"name,omitempty"`
-	Tags	  []string `json:"tags,omitempty" gorm:"-"`
+	Tags	  []string `json:"tags" gorm:"-"`
 	CreatedAt time.Time `json:"created_at,omitempty" gorm:"-"`
 	UpdatedAt time.Time `json:"updated_at,omitempty" gorm:"-"`
 }

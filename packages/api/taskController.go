@@ -15,8 +15,11 @@ func (h *Handler) CreateTask(w http.ResponseWriter, r *http.Request) {
 	reqUserID := r.Header.Get("userID")
 	task.UserID = reqUserID
 	task.Name = r.FormValue("name")
-	tagNames := r.Form["tag"]
-	task.Tags = tagNames
+	if tags := r.Form["tags"]; tags == nil {
+		task.Tags = make([]string, 0)
+	} else {
+		task.Tags = tags
+	}
 
 	err := h.DB.Create(&task).Error
 	if err != nil {
@@ -24,7 +27,7 @@ func (h *Handler) CreateTask(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	for _, tagName := range tagNames {
+	for _, tagName := range task.Tags {
 		var tag db.Tag 
 		tag.Name = tagName
 		tag.UserID = reqUserID
@@ -110,7 +113,11 @@ func (h *Handler) UpdateTask(w http.ResponseWriter, r *http.Request) {
 	} else {
 		r.ParseForm()
 		task.Name = r.FormValue("name")
-		task.Tags = r.Form["tag"]
+		if tags := r.Form["tags"]; tags == nil {
+			task.Tags = make([]string, 0)
+		} else {
+			task.Tags = tags
+		}
 		h.DB.Save(&task)
 
 		h.DB.Where("task_id = ?", taskID).Delete(db.Tag{})
