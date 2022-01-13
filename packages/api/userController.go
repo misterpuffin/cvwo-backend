@@ -31,9 +31,14 @@ func (h *Handler) Register(w http.ResponseWriter, r *http.Request) {
 	user.Name = r.FormValue("name")
 	user.Password = user.HashPassword(r.FormValue("password"))
 
+	if user.Email == "" {
+		utils.NewErrorResponse(w, http.StatusBadRequest, "Error: " + "No email entered.")
+		return
+	}
+
 	err := h.DB.Create(&user).Error
 	if err != nil {
-		utils.NewErrorResponse(w, http.StatusUnauthorized, "Error: " + err.Error())
+		utils.NewErrorResponse(w, http.StatusBadRequest, "Error: " + err.Error())
 		return
 	}
 	utils.NewJSONResponse(w, &user)
