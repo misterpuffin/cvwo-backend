@@ -113,6 +113,14 @@ func (h *Handler) UpdateTask(w http.ResponseWriter, r *http.Request) {
 	} else {
 		r.ParseForm()
 		task.Name = r.FormValue("name")
+		if done := r.FormValue("done"); done != "" {
+			task.Done, err = strconv.ParseBool(done)
+			if err != nil {
+				utils.NewErrorResponse(w, http.StatusUnauthorized, "Error: " + err.Error())
+				return
+			}
+		}
+
 		if tags := r.Form["tags"]; tags == nil {
 			task.Tags = make([]string, 0)
 		} else {
