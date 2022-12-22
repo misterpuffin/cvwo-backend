@@ -17,7 +17,8 @@ func Connect() (*gorm.DB, error) {
 	// host := config.Config[config.MYSQL_SERVER_HOST]
 
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:3306)/%s?charset=utf8mb4&parseTime=True&loc=Local", user, password, url, database)
-  	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+  fmt.Printf(dsn)
+  db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 
 	if err != nil{
 		log.Println("Connection Failed to Open")

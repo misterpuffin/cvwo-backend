@@ -16,7 +16,6 @@ const (
 	PORT          		 = "PORT"
 	JWT_KEY              = "JWT_KEY"
 	RUN_MIGRATION        = "RUN_MIGRATION"
-	MYSQL_SERVER_HOST = "POSTGRES_SERVER_HOST"
 	ENVIRONMEMT           = "ENV"
 )
 
@@ -31,7 +30,6 @@ var Config = ConfigType{
 	PORT:          		  "",
 	JWT_KEY:              "",
 	RUN_MIGRATION:        "",
-	MYSQL_SERVER_HOST: "localhost",
 }
 
 func InitConfig() {
@@ -50,6 +48,7 @@ func InitConfig() {
 		MYSQL_DB:       true,
 		MYSQL_URL:		true,
 		CLIENT_URL:        true,
+    JWT_KEY:        true,
 		PORT:       	   true,
 		RUN_MIGRATION:     true,
 	}
